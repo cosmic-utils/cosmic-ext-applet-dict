@@ -22,7 +22,7 @@ flatpak install dev.cappsy.CosmicExtAppletDict
 ```
 
 ## With thanks & Credit
-* [Open-Source English Dictionary](https://github.com/CloudBytes-Academy/English-Dictionary-Open-Source) - Public Domain based dictionary that the applet is currently based on
+* [Open-Source English Dictionary](https://github.com/CloudBytes-Academy/English-Dictionary-Open-Source) - Public Domain based dictionary on which the applet is currently based
 * [Book icon used for the logo and applet icon](https://www.svgrepo.com/svg/533406/book) by [Dazzle Ui](https://www.svgrepo.com/author/Dazzle%20UI/)
 * [System76 and their COSMIC desktop environment](https://system76.com/cosmic/)
 * [COSMIC Utilities](https://github.com/cosmic-utils/) - Organization containing third party utilities for COSMIC™

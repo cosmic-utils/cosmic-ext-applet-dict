@@ -69,6 +69,7 @@ flatpak-builder:
         --verbose \
         --ccache \
         --user \
+        --disable-rofiles-fuse \
         --install \
         --install-deps-from=flathub \
         --repo=repo \

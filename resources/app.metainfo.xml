@@ -3,25 +3,56 @@
   <id>dev.cappsy.CosmicExtAppletDict</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-only</project_license>
+  <project_group>COSMIC</project_group>
+  <developer id="dev.cappsy">
+    <name>Jonathan Capps</name>
+  </developer>
+  <developer_name>Jonathan Capps</developer_name>
+  <update_contact>cappsy@gmail.com</update_contact>
+  <url type="homepage">
+    https://github.com/cappsyco/cosmic-ext-applet-dict
+  </url>
+  <url type="bugtracker">
+    https://github.com/cappsyco/cosmic-ext-applet-dict/issues
+  </url>
+  <url type="contribute">
+    https://github.com/cappsyco/cosmic-ext-applet-dict
+  </url>
   <name>Dictionary</name>
-  <summary>An English dictionary applet for the COSMIC desktop.</summary>
+  <summary>An English dictionary applet for the COSMIC desktop</summary>
   <icon type="remote" width="64" height="64" scale="1">
     https://github.com/cappsyco/cosmic-ext-applet-dict/raw/main/resources/icons/hicolor/scalable/apps/icon.svg
   </icon>
-  <url
-        type="vcs-browser"
-    >https://github.com/cappsyco/cosmic-ext-applet-dict</url>
+  <url type="vcs-browser">https://github.com/cappsyco/cosmic-ext-applet-dict</url>
   <description>
-    <p>For all your applet needs!</p>
+    <p>An English language dictionary applet, perfect for quick access searching for words and definitions, or cycling through some random words to further enrich your knowledge of the English language.</p>
+    <p>Uses the Open-Source English Dictionary (link in repo).</p>
   </description>
-  <launchable
-        type="desktop-id"
-    >dev.cappsy.CosmicExtAppletDict.desktop</launchable>
-  <provides>
-    <binaries>
-      <binary>cosmic-ext-applet-dict</binary>
-    </binaries>
-  </provides>
+  <screenshots>
+    <screenshot type="default">
+      <image>
+        https://raw.githubusercontent.com/cappsyco/cosmic-ext-applet-dict/main/resources/screenshots/screen1.png
+      </image>
+      <caption>
+        A view of the open applet showing the search box, some results and the random link at the bottom.
+      </caption>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="0.1.0" date="2025-11-15">
+      <url type="details">
+        https://github.com/cappsyco/cosmic-ext-applet-dict/releases/tag/v0.1.0
+      </url>
+      <description>
+        <p>0.1.0 - Initial release including:</p>
+        <ul>
+          <li>A full, searchable English dictionary</li>
+          <li>A button to give you a random entry</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  <launchable type="desktop-id">dev.cappsy.CosmicExtAppletDict.desktop</launchable>
   <requires>
     <display_length compare="ge">360</display_length>
   </requires>

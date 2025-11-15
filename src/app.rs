@@ -112,7 +112,7 @@ impl cosmic::Application for AppModel {
         }
         entries_list = entries_list.push(
             container(
-                widget::button::text("Search above or click for something random")
+                widget::button::text(fl!("search-or-random"))
                     .on_press(Message::Random)
                     .width(Length::Fill)
                     .padding(5),
