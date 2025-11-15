@@ -2,6 +2,8 @@
 
 An English language dictionary applet, perfect for quick access searching for words and definitions, or cycling through some random words to enrich your knowledge of the English language!
 
+![A view of the open applet showing the search box, some results and the random link at the bottom.](https://raw.githubusercontent.com/cappsyco/cosmic-ext-applet-dict/main/resources/screenshots/screen1.jpg)
+
 ## Manual installation
 
 You're going to need to make sure you have the ability to compile Rust binaries, along with `git` and `just`
