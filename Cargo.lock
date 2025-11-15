@@ -978,7 +978,7 @@ dependencies = [
 [[package]]
 name = "cosmic-config"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "atomicwrites",
  "cosmic-config-derive",
@@ -999,7 +999,7 @@ dependencies = [
 [[package]]
 name = "cosmic-config-derive"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "quote",
  "syn 2.0.110",
@@ -1009,8 +1009,8 @@ dependencies = [
 name = "cosmic-ext-applet-dict"
 version = "0.1.0"
 dependencies = [
- "i18n-embed 0.15.4",
- "i18n-embed-fl 0.9.4",
+ "i18n-embed",
+ "i18n-embed-fl",
  "libcosmic",
  "rust-embed",
  "sqlite",
@@ -1078,7 +1078,7 @@ dependencies = [
  "log",
  "rangemap",
  "rustc-hash 1.1.0",
- "self_cell 1.2.1",
+ "self_cell",
  "skrifa",
  "smol_str",
  "swash",
@@ -1092,7 +1092,7 @@ dependencies = [
 [[package]]
 name = "cosmic-theme"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "almost",
  "cosmic-config",
@@ -1583,37 +1583,11 @@ checksum = "8bf7cc16383c4b8d58b9905a8509f02926ce3058053c056376248d958c9df1e8"
 
 [[package]]
 name = "fluent"
-version = "0.16.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb74634707bebd0ce645a981148e8fb8c7bccd4c33c652aeffd28bf2f96d555a"
-dependencies = [
- "fluent-bundle 0.15.3",
- "unic-langid",
-]
-
-[[package]]
-name = "fluent"
 version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8137a6d5a2c50d6b0ebfcb9aaa91a28154e0a70605f112d30cb0cd4a78670477"
 dependencies = [
- "fluent-bundle 0.16.0",
- "unic-langid",
-]
-
-[[package]]
-name = "fluent-bundle"
-version = "0.15.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fe0a21ee80050c678013f82edf4b705fe2f26f1f9877593d13198612503f493"
-dependencies = [
- "fluent-langneg",
- "fluent-syntax 0.11.1",
- "intl-memoizer",
- "intl_pluralrules",
- "rustc-hash 1.1.0",
- "self_cell 0.10.3",
- "smallvec",
+ "fluent-bundle",
  "unic-langid",
 ]
 
@@ -1624,11 +1598,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "01203cb8918f5711e73891b347816d932046f95f54207710bda99beaeb423bf4"
 dependencies = [
  "fluent-langneg",
- "fluent-syntax 0.12.0",
+ "fluent-syntax",
  "intl-memoizer",
  "intl_pluralrules",
  "rustc-hash 2.1.1",
- "self_cell 1.2.1",
+ "self_cell",
  "smallvec",
  "unic-langid",
 ]
@@ -1640,15 +1614,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7eebbe59450baee8282d71676f3bfed5689aeab00b27545e83e5f14b1195e8b0"
 dependencies = [
  "unic-langid",
-]
-
-[[package]]
-name = "fluent-syntax"
-version = "0.11.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2a530c4694a6a8d528794ee9bbd8ba0122e779629ac908d15ad5a7ae7763a33d"
-dependencies = [
- "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -2141,35 +2106,14 @@ dependencies = [
 
 [[package]]
 name = "i18n-embed"
-version = "0.15.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "669ffc2c93f97e6ddf06ddbe999fcd6782e3342978bb85f7d3c087c7978404c4"
-dependencies = [
- "arc-swap",
- "fluent 0.16.1",
- "fluent-langneg",
- "fluent-syntax 0.11.1",
- "i18n-embed-impl",
- "intl-memoizer",
- "locale_config",
- "log",
- "parking_lot 0.12.5",
- "rust-embed",
- "thiserror 1.0.69",
- "unic-langid",
- "walkdir",
-]
-
-[[package]]
-name = "i18n-embed"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a217bbb075dcaefb292efa78897fc0678245ca67f265d12c351e42268fcb0305"
 dependencies = [
  "arc-swap",
- "fluent 0.17.0",
+ "fluent",
  "fluent-langneg",
- "fluent-syntax 0.12.0",
+ "fluent-syntax",
  "i18n-embed-impl",
  "intl-memoizer",
  "log",
@@ -2183,34 +2127,15 @@ dependencies = [
 
 [[package]]
 name = "i18n-embed-fl"
-version = "0.9.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04b2969d0b3fc6143776c535184c19722032b43e6a642d710fa3f88faec53c2d"
-dependencies = [
- "find-crate",
- "fluent 0.16.1",
- "fluent-syntax 0.11.1",
- "i18n-config",
- "i18n-embed 0.15.4",
- "proc-macro-error2",
- "proc-macro2",
- "quote",
- "strsim",
- "syn 2.0.110",
- "unic-langid",
-]
-
-[[package]]
-name = "i18n-embed-fl"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e598ed73b67db92f61e04672e599eef2991a262a40e1666735b8a86d2e7e9f30"
 dependencies = [
  "find-crate",
- "fluent 0.17.0",
- "fluent-syntax 0.12.0",
+ "fluent",
+ "fluent-syntax",
  "i18n-config",
- "i18n-embed 0.16.0",
+ "i18n-embed",
  "proc-macro-error2",
  "proc-macro2",
  "quote",
@@ -2259,7 +2184,7 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "dnd",
  "iced_accessibility",
@@ -2277,7 +2202,7 @@ dependencies = [
 [[package]]
 name = "iced_accessibility"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "accesskit",
  "accesskit_winit",
@@ -2286,7 +2211,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "bitflags 2.10.0",
  "bytes",
@@ -2310,7 +2235,7 @@ dependencies = [
 [[package]]
 name = "iced_futures"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "futures",
  "iced_core",
@@ -2336,7 +2261,7 @@ dependencies = [
 [[package]]
 name = "iced_graphics"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "bitflags 2.10.0",
  "bytemuck",
@@ -2358,7 +2283,7 @@ dependencies = [
 [[package]]
 name = "iced_renderer"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "iced_graphics",
  "iced_tiny_skia",
@@ -2370,7 +2295,7 @@ dependencies = [
 [[package]]
 name = "iced_runtime"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "bytes",
  "cosmic-client-toolkit",
@@ -2385,7 +2310,7 @@ dependencies = [
 [[package]]
 name = "iced_tiny_skia"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "bytemuck",
  "cosmic-text",
@@ -2401,7 +2326,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "as-raw-xcb-connection",
  "bitflags 2.10.0",
@@ -2432,7 +2357,7 @@ dependencies = [
 [[package]]
 name = "iced_widget"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
@@ -2451,7 +2376,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.14.0-dev"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "cosmic-client-toolkit",
  "dnd",
@@ -2824,12 +2749,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "lazy_static"
-version = "1.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
-
-[[package]]
 name = "libc"
 version = "0.2.177"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2838,7 +2757,7 @@ checksum = "2874a2af47a2325c2001a6e6fad9b16a53b802102b528163885171cf92b15976"
 [[package]]
 name = "libcosmic"
 version = "0.1.0"
-source = "git+https://github.com/pop-os/libcosmic.git#96a51be3e4e0ae2de4af223f3dda75f321973a3e"
+source = "git+https://github.com/pop-os/libcosmic.git#16d095b2cdf3696718b1da87a83d8679fbee01a0"
 dependencies = [
  "apply",
  "ashpd 0.12.0",
@@ -2853,8 +2772,8 @@ dependencies = [
  "css-color",
  "derive_setters",
  "futures",
- "i18n-embed 0.16.0",
- "i18n-embed-fl 0.10.0",
+ "i18n-embed",
+ "i18n-embed-fl",
  "iced",
  "iced_core",
  "iced_futures",
@@ -2948,19 +2867,6 @@ name = "litrs"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "11d3d7f243d5c5a8b9bb5d6dd2b1602c0cb0b9db1621bafc7ed66e35ff9fe092"
-
-[[package]]
-name = "locale_config"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08d2c35b16f4483f6c26f0e4e9550717a2f6575bcd6f12a53ff0c490a94a6934"
-dependencies = [
- "lazy_static",
- "objc",
- "objc-foundation",
- "regex",
- "winapi",
-]
 
 [[package]]
 name = "lock_api"
@@ -4101,9 +4007,9 @@ checksum = "c3d6831663a5098ea164f89cff59c6284e95f4e3c76ce9848d4529f5ccca9bde"
 
 [[package]]
 name = "rangemap"
-version = "1.6.0"
+version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f93e7e49bb0bf967717f7bd674458b3d6b0c5f48ec7e3038166026a69fc22223"
+checksum = "acbbbbea733ec66275512d0b9694f34102e7d5406fdbe2ad8d21b28dce92887c"
 
 [[package]]
 name = "raw-window-handle"
@@ -4400,15 +4306,6 @@ dependencies = [
  "memmap2 0.9.9",
  "smithay-client-toolkit 0.19.2",
  "tiny-skia",
-]
-
-[[package]]
-name = "self_cell"
-version = "0.10.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e14e4d63b804dc0c7ec4a1e52bcb63f02c7ac94476755aa579edac21e01f915d"
-dependencies = [
- "self_cell 1.2.1",
 ]
 
 [[package]]

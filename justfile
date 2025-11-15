@@ -9,6 +9,7 @@ desktop := appid + '.desktop'
 desktop-dst := clean(rootdir / prefix) / 'share' / 'applications' / desktop
 appdata := appid + '.metainfo.xml'
 appdata-dst := clean(rootdir / prefix) / 'share' / 'appdata' / appdata
+dict-dst := clean(rootdir / prefix) / 'share' / appid / 'dictionary.db'
 icons-src := 'resources' / 'icons' / 'hicolor'
 icons-dst := clean(rootdir / prefix) / 'share' / 'icons' / 'hicolor'
 icon-svg-src := icons-src / 'scalable' / 'apps' / 'icon.svg'
@@ -54,11 +55,12 @@ install:
     install -Dm0755 {{ bin-src }} {{ bin-dst }}
     install -Dm0644 resources/app.desktop {{ desktop-dst }}
     install -Dm0644 resources/app.metainfo.xml {{ appdata-dst }}
+    install -Dm0644 resources/database/dictionary.db {{ dict-dst }}
     install -Dm0644 {{ icon-svg-src }} {{ icon-svg-dst }}
 
 # Uninstalls installed files
 uninstall:
-    rm -f {{ bin-dst }} {{ desktop-dst }} {{ icon-svg-dst }}
+    rm -f {{ bin-dst }} {{ desktop-dst }} {{ dict-dst }} {{ icon-svg-dst }}
 
 # Build flatpak locally
 flatpak-builder:

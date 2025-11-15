@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Dictionary
-Exec=cosmic-ext-applet-dictionary
+Exec=cosmic-ext-applet-dict
 Terminal=false
 Type=Application
 StartupNotify=true

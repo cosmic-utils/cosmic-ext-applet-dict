@@ -4,12 +4,12 @@ use crate::config::Config;
 use crate::fl;
 use cosmic::cosmic_config::{self, CosmicConfigEntry};
 use cosmic::iced::Length;
-use cosmic::iced::{Limits, Subscription, window::Id};
-use cosmic::iced_widget::{column, row, container, scrollable};
+use cosmic::iced::{window::Id, Limits, Subscription};
+use cosmic::iced_widget::{column, container, row, scrollable};
 use cosmic::iced_winit::commands::popup::{destroy_popup, get_popup};
 use cosmic::prelude::*;
 use cosmic::widget;
-use cosmic_ext_applet_dict::{Entry, fetch_words};
+use cosmic_ext_applet_dict::{fetch_words, Entry};
 
 #[derive(Default)]
 pub struct AppModel {
@@ -26,6 +26,7 @@ pub enum Message {
     PopupClosed(Id),
     UpdateConfig(Config),
     Search(String),
+    Random,
 }
 
 impl cosmic::Application for AppModel {
@@ -46,8 +47,6 @@ impl cosmic::Application for AppModel {
         core: cosmic::Core,
         _flags: Self::Flags,
     ) -> (Self, Task<cosmic::Action<Self::Message>>) {
-        let entries = fetch_words(None).unwrap_or(vec![]);
-
         let app = AppModel {
             core,
             config: cosmic_config::Config::new(Self::APP_ID, Config::VERSION)
@@ -56,7 +55,6 @@ impl cosmic::Application for AppModel {
                     Err((_errors, config)) => config,
                 })
                 .unwrap_or_default(),
-            entries,
             ..Default::default()
         };
 
@@ -70,7 +68,12 @@ impl cosmic::Application for AppModel {
     fn view(&self) -> Element<'_, Self::Message> {
         self.core
             .applet
-            .icon_button("accessories-dictionary-symbolic")
+            .icon_button_from_handle(
+                cosmic::widget::icon::from_svg_bytes(include_bytes!(
+                    "../resources/icons/hicolor/scalable/apps/icon.svg"
+                ))
+                .symbolic(true),
+            )
             .on_press(Message::TogglePopup)
             .into()
     }
@@ -80,19 +83,18 @@ impl cosmic::Application for AppModel {
 
         // quick search
         content_list = content_list.push(
-            container(
-                row!(
-                    widget::text_input(fl!("search"), self.search_text.clone())
-                        .on_input(move |value| Message::Search(value.clone()))
-                        .width(Length::Fill),
-                )
+            container(row!(widget::text_input(
+                fl!("search"),
+                self.search_text.clone()
             )
-            .padding(8),
+            .on_input(move |value| Message::Search(value.clone()))
+            .width(Length::Fill),))
+            .padding([8, 8, 10, 8]),
         );
 
         // build entries in scrollable list
         let mut entries_list = widget::column().padding(8).spacing(0);
-        let mut entry_i = 1;
+
         for entry in &self.entries {
             let mut entry_content = column!(
                 widget::text::title4(&entry.word),
@@ -106,22 +108,28 @@ impl cosmic::Application for AppModel {
             }
 
             entries_list = entries_list.push(entry_content.padding([10, 10, 15, 10]));
-            if entry_i != self.entries.len() {
-                entries_list = entries_list.push(widget::divider::horizontal::default());
-            }
-            entry_i += 1;
+            entries_list = entries_list.push(widget::divider::horizontal::default());
         }
+        entries_list = entries_list.push(
+            container(
+                widget::button::text("Search above or click for something random")
+                    .on_press(Message::Random)
+                    .width(Length::Fill)
+                    .padding(5),
+            )
+            .padding([10, 0, 0, 0]),
+        );
+
         content_list = content_list.push(scrollable(entries_list));
 
         self.core.applet.popup_container(content_list).into()
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
-        Subscription::batch(vec![
-            self.core()
-                .watch_config::<Config>(Self::APP_ID)
-                .map(|update| Message::UpdateConfig(update.config)),
-        ])
+        Subscription::batch(vec![self
+            .core()
+            .watch_config::<Config>(Self::APP_ID)
+            .map(|update| Message::UpdateConfig(update.config))])
     }
 
     fn update(&mut self, message: Self::Message) -> Task<cosmic::Action<Self::Message>> {
@@ -130,14 +138,19 @@ impl cosmic::Application for AppModel {
                 self.search_text = query;
 
                 // execute the search if it's long enough
-                if self.search_text.len() > 3 {
+                if !self.search_text.is_empty() {
                     self.entries = fetch_words(if &self.search_text != "" {
                         Some(&self.search_text)
                     } else {
                         None
                     })
                     .unwrap_or(vec![]);
+                } else {
+                    self.entries = vec![];
                 }
+            }
+            Message::Random => {
+                self.entries = fetch_words(None).unwrap_or(vec![]);
             }
             Message::UpdateConfig(config) => {
                 self.config = config;
