@@ -1,2 +1,2 @@
 search = Search...
-search-or-random = Search or click here for something random
+random = Random

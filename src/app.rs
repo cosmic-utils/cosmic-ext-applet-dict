@@ -3,7 +3,6 @@
 use crate::config::Config;
 use crate::fl;
 use cosmic::cosmic_config::{self, CosmicConfigEntry};
-use cosmic::iced::Length;
 use cosmic::iced::{window::Id, Limits, Subscription};
 use cosmic::iced_widget::{column, container, row, scrollable};
 use cosmic::iced_winit::commands::popup::{destroy_popup, get_popup};
@@ -83,44 +82,38 @@ impl cosmic::Application for AppModel {
 
         // quick search
         content_list = content_list.push(
-            container(row!(widget::text_input(
-                fl!("search"),
-                self.search_text.clone()
-            )
-            .on_input(move |value| Message::Search(value.clone()))
-            .width(Length::Fill),))
-            .padding([8, 8, 10, 8]),
+            container(row!(
+                widget::text_input(fl!("search"), self.search_text.clone())
+                    .on_input(move |value| Message::Search(value.clone())).padding([6,10]),
+                widget::Space::new(5, 0),
+                widget::button::standard(fl!("random")).on_press(Message::Random)
+            ))  
         );
 
         // build entries in scrollable list
         let mut entries_list = widget::column().padding(8).spacing(0);
 
-        for entry in &self.entries {
-            let mut entry_content = column!(
-                widget::text::title4(&entry.word),
-                widget::text(&entry.wordtype),
-            );
+        if !self.entries.is_empty() {
+            content_list = content_list.push(widget::Space::new(0, 10));
+            for entry in &self.entries {
+                let mut entry_content = column!(widget::text::title4(&entry.word),);
+                if !entry.wordtype.is_empty() {
+                    entry_content = entry_content.push(widget::text::body(&entry.wordtype));
+                }
 
-            let mut def_i = 1;
-            for def in &entry.defs {
-                entry_content = entry_content.push(widget::text(format!("{}. {}", def_i, def)));
-                def_i += 1;
+                let mut def_i = 1;
+                for def in &entry.defs {
+                    entry_content = entry_content.push(widget::Space::new(0, 5));
+                    entry_content = entry_content.push(widget::text::body(format!("{}. {}", def_i, def)));
+                    def_i += 1;
+                }
+
+                entries_list = entries_list.push(entry_content.padding([10, 10, 15, 10]));
+                entries_list = entries_list.push(widget::divider::horizontal::default());
             }
 
-            entries_list = entries_list.push(entry_content.padding([10, 10, 15, 10]));
-            entries_list = entries_list.push(widget::divider::horizontal::default());
+            content_list = content_list.push(scrollable(entries_list));
         }
-        entries_list = entries_list.push(
-            container(
-                widget::button::text(fl!("search-or-random"))
-                    .on_press(Message::Random)
-                    .width(Length::Fill)
-                    .padding(5),
-            )
-            .padding([10, 0, 0, 0]),
-        );
-
-        content_list = content_list.push(scrollable(entries_list));
 
         self.core.applet.popup_container(content_list).into()
     }
@@ -137,7 +130,6 @@ impl cosmic::Application for AppModel {
             Message::Search(query) => {
                 self.search_text = query;
 
-                // execute the search if it's long enough
                 if !self.search_text.is_empty() {
                     self.entries = fetch_words(if &self.search_text != "" {
                         Some(&self.search_text)

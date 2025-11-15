@@ -26,6 +26,7 @@
   <url type="vcs-browser">https://github.com/cappsyco/cosmic-ext-applet-dict</url>
   <description>
     <p>An English language dictionary applet, perfect for quick access searching for words and definitions, or cycling through some random words to further enrich your knowledge of the English language.</p>
+    <p>Contains all English words, including profanity and offensive terms. The random function could also show any of these.</p>
     <p>Uses the Open-Source English Dictionary (link in repo).</p>
   </description>
   <screenshots>
