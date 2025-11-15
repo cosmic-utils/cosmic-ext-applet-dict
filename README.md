@@ -1,2 +1,2 @@
 # Dictionary Applet (for the COSMIC™ Desktop)
-A English dictionary applet for the COSMIC desktop
+An English dictionary applet for the COSMIC desktop.

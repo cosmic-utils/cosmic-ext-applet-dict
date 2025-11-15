@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Dictionary
+Exec=cosmic-ext-applet-dictionary
+Terminal=false
+Type=Application
+StartupNotify=true
+NotShowIn=COSMIC
+Icon=dev.cappsy.CosmicExtAppletDict-symbolic
+Categories=COSMIC;Utility;
+Keywords=Folder;Manager;
+MimeType=inode/directory;
+NoDisplay=true
+X-CosmicApplet=true
+X-CosmicHoverPopup=Auto
