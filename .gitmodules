@@ -1,0 +1,3 @@
+[submodule "wordset-dictionary"]
+	path = wordset-dictionary
+	url = https://github.com/cappsyco/wordset-dictionary
