@@ -4,8 +4,14 @@ use std::path::PathBuf;
 #[derive(Debug)]
 pub struct Entry {
     pub word: String,
-    pub wordtype: String,
-    pub defs: Vec<String>,
+    pub defs: Vec<Definition>,
+}
+
+#[derive(Debug)]
+pub struct Definition {
+    pub def: String,
+    pub speech_part: String,
+    pub example: String,
 }
 
 pub fn fetch_words(search_q: Option<&str>) -> Result<Vec<Entry>, sqlite::Error> {
@@ -13,23 +19,22 @@ pub fn fetch_words(search_q: Option<&str>) -> Result<Vec<Entry>, sqlite::Error> 
 
     let query = match search_q {
         Some(q) => format!(
-            "SELECT word, wordtype FROM entries WHERE word LIKE '{}%' GROUP BY word ORDER BY word LIMIT 10",
+            "SELECT id, word FROM words WHERE word LIKE '{}%' ORDER BY word LIMIT 10",
             q
         ),
         None => {
-            format!("SELECT word, wordtype FROM entries GROUP BY word ORDER BY RANDOM() LIMIT 1")
+            format!("SELECT id, word FROM words ORDER BY RANDOM() LIMIT 1")
         }
     };
     let mut statement = connection.prepare(query)?;
     let mut entries = vec![];
     while let Ok(State::Row) = statement.next() {
+        let id = statement.read::<String, _>("id").unwrap_or_default();
         let word = statement.read::<String, _>("word").unwrap_or_default();
-        let wordtype = statement.read::<String, _>("wordtype").unwrap_or_default();
-        let defs = fetch_word_definitions(&connection, &word).unwrap_or_default();
+        let defs = fetch_word_definitions(&connection, &id).unwrap_or_default();
 
         entries.push(Entry {
             word: word,
-            wordtype: wordtype,
             defs: defs,
         });
     }
@@ -39,20 +44,22 @@ pub fn fetch_words(search_q: Option<&str>) -> Result<Vec<Entry>, sqlite::Error> 
 
 fn fetch_word_definitions(
     connection: &sqlite::Connection,
-    word: &str,
-) -> Result<Vec<String>, sqlite::Error> {
-    let query = format!("SELECT definition FROM entries WHERE word = '{}'", word);
+    word_id: &str,
+) -> Result<Vec<Definition>, sqlite::Error> {
+    let query = format!(
+        "SELECT def, speech_part, example FROM definitions WHERE word_id = '{}'",
+        word_id
+    );
     let mut statement = connection.prepare(query)?;
-    let mut definitions = vec![];
+    let mut definitions: Vec<Definition> = vec![];
     while let Ok(State::Row) = statement.next() {
-        definitions.push(
-            statement
-                .read::<String, _>("definition")
-                .unwrap_or_default()
-                .replace('\n', "")
-                .replace('\r', "")
-                .replace("   ", " "),
-        );
+        definitions.push(Definition {
+            def: statement.read::<String, _>("def").unwrap_or_default(),
+            speech_part: statement
+                .read::<String, _>("speech_part")
+                .unwrap_or_default(),
+            example: statement.read::<String, _>("example").unwrap_or_default(),
+        });
     }
 
     Ok(definitions)
@@ -60,7 +67,7 @@ fn fetch_word_definitions(
 
 fn get_dictionary_path() -> PathBuf {
     const APP_ID: &str = "dev.cappsy.CosmicExtAppletDict";
-    const DB_FILENAME: &str = "dictionary.db";
+    const DB_FILENAME: &str = "wordset.db";
 
     // Are we in dev mode?
     if let Ok(exe_path) = std::env::current_exe() {

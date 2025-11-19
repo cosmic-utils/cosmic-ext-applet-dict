@@ -2,6 +2,8 @@
 
 An English language dictionary applet, perfect for quick access searching for words and definitions, or cycling through some random words to enrich your knowledge of the English language!
 
+We use [https://github.com/cappsyco/wordset-dictionary](our own fork of the Wordset Dictionary), so please submit any additions or corrections there so we can guarantee these changes make it into the applet.
+
 ![A view of the open applet showing the search box, some results and the random link at the bottom.](https://raw.githubusercontent.com/cappsyco/cosmic-ext-applet-dict/main/resources/screenshots/screen1.jpg)
 
 ## Manual installation
@@ -24,7 +26,7 @@ flatpak install dev.cappsy.CosmicExtAppletDict
 ```
 
 ## With thanks & Credit
-* [Open-Source English Dictionary](https://github.com/CloudBytes-Academy/English-Dictionary-Open-Source) - Public Domain based dictionary on which the applet is currently based
+* [Wordset Dictionary](https://github.com/wordset/wordset-dictionary) - Open source, collaborative dictionary on which this applet is currently based
 * [Book icon used for the logo and applet icon](https://www.svgrepo.com/svg/533406/book) by [Dazzle Ui](https://www.svgrepo.com/author/Dazzle%20UI/)
 * [System76 and their COSMIC desktop environment](https://system76.com/cosmic/)
 * [COSMIC Utilities](https://github.com/cosmic-utils/) - Organization containing third party utilities for COSMIC™

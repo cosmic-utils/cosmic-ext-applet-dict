@@ -3,12 +3,12 @@
 use crate::config::Config;
 use crate::fl;
 use cosmic::cosmic_config::{self, CosmicConfigEntry};
-use cosmic::iced::{window::Id, Limits, Subscription};
+use cosmic::iced::{Limits, Subscription, window::Id};
 use cosmic::iced_widget::{column, container, row, scrollable};
 use cosmic::iced_winit::commands::popup::{destroy_popup, get_popup};
 use cosmic::prelude::*;
 use cosmic::widget;
-use cosmic_ext_applet_dict::{fetch_words, Entry};
+use cosmic_ext_applet_dict::{Entry, fetch_words};
 
 #[derive(Default)]
 pub struct AppModel {
@@ -24,7 +24,8 @@ pub enum Message {
     TogglePopup,
     PopupClosed(Id),
     UpdateConfig(Config),
-    Search(String),
+    SearchInput(String),
+    Search,
     Random,
 }
 
@@ -81,14 +82,18 @@ impl cosmic::Application for AppModel {
         let mut content_list = widget::column().padding(8).spacing(0);
 
         // quick search
-        content_list = content_list.push(
-            container(row!(
-                widget::text_input(fl!("search"), self.search_text.clone())
-                    .on_input(move |value| Message::Search(value.clone())).padding([6,10]),
-                widget::Space::new(5, 0),
-                widget::button::standard(fl!("random")).on_press(Message::Random)
-            ))  
-        );
+        content_list = content_list.push(container(row!(
+            widget::text_input(fl!("search"), self.search_text.clone())
+                .on_input(move |value| Message::SearchInput(value.clone()))
+                .on_submit(move |_| Message::Search)
+                .padding([6, 10]),
+            widget::Space::new(5, 0),
+            widget::button::icon(widget::icon::from_name("system-search-symbolic"))
+                .on_press(Message::Search),
+            widget::Space::new(5, 0),
+            widget::button::icon(widget::icon::from_name("media-playlist-shuffle-symbolic"))
+                .on_press(Message::Random),
+        )));
 
         // build entries in scrollable list
         let mut entries_list = widget::column().padding(8).spacing(0);
@@ -97,14 +102,22 @@ impl cosmic::Application for AppModel {
             content_list = content_list.push(widget::Space::new(0, 10));
             for entry in &self.entries {
                 let mut entry_content = column!(widget::text::title4(&entry.word),);
-                if !entry.wordtype.is_empty() {
-                    entry_content = entry_content.push(widget::text::body(&entry.wordtype));
-                }
 
                 let mut def_i = 1;
+                let mut last_sp = "";
                 for def in &entry.defs {
-                    entry_content = entry_content.push(widget::Space::new(0, 5));
-                    entry_content = entry_content.push(widget::text::body(format!("{}. {}", def_i, def)));
+                    if last_sp != def.speech_part {
+                        entry_content = entry_content.push(
+                            container(widget::text::body(format!("{}", def.speech_part)))
+                                .padding([10, 0, 0, 0]),
+                        );
+                        def_i = 1;
+                        last_sp = &def.speech_part;
+                    }
+                    entry_content = entry_content.push(
+                        container(widget::text::body(format!("{}. {}", def_i, def.def)))
+                            .padding([5, 0, 0, 10]),
+                    );
                     def_i += 1;
                 }
 
@@ -119,17 +132,19 @@ impl cosmic::Application for AppModel {
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
-        Subscription::batch(vec![self
-            .core()
-            .watch_config::<Config>(Self::APP_ID)
-            .map(|update| Message::UpdateConfig(update.config))])
+        Subscription::batch(vec![
+            self.core()
+                .watch_config::<Config>(Self::APP_ID)
+                .map(|update| Message::UpdateConfig(update.config)),
+        ])
     }
 
     fn update(&mut self, message: Self::Message) -> Task<cosmic::Action<Self::Message>> {
         match message {
-            Message::Search(query) => {
+            Message::SearchInput(query) => {
                 self.search_text = query;
-
+            }
+            Message::Search => {
                 if !self.search_text.is_empty() {
                     self.entries = fetch_words(if &self.search_text != "" {
                         Some(&self.search_text)
