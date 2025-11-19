@@ -2,7 +2,7 @@
 
 An English language dictionary applet, perfect for quick access searching for words and definitions, or cycling through some random words to enrich your knowledge of the English language!
 
-We use [https://github.com/cappsyco/wordset-dictionary](our own fork of the Wordset Dictionary), so please submit any additions or corrections there so we can guarantee these changes make it into the applet.
+We use [our own fork of the Wordset Dictionary](https://github.com/cappsyco/wordset-dictionary), so please submit any additions or corrections there so we can guarantee these changes make it into the applet.
 
 ![A view of the open applet showing the search box, some results and the random link at the bottom.](https://raw.githubusercontent.com/cappsyco/cosmic-ext-applet-dict/main/resources/screenshots/screen1.jpg)
 
