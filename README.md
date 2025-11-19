@@ -25,7 +25,7 @@ flatpak remote-add --if-not-exists --user cosmic https://apt.pop-os.org/cosmic/c
 flatpak install dev.cappsy.CosmicExtAppletDict
 ```
 
-## With thanks & Credit
+## Credit & thanks
 * [Wordset Dictionary](https://github.com/wordset/wordset-dictionary) - Open source, collaborative dictionary on which this applet is currently based
 * [Book icon used for the logo and applet icon](https://www.svgrepo.com/svg/533406/book) by [Dazzle Ui](https://www.svgrepo.com/author/Dazzle%20UI/)
 * [System76 and their COSMIC desktop environment](https://system76.com/cosmic/)

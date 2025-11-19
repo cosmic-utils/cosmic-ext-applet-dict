@@ -158,6 +158,7 @@ impl cosmic::Application for AppModel {
             }
             Message::Random => {
                 self.entries = fetch_words(None).unwrap_or(vec![]);
+                self.search_text = String::new();
             }
             Message::UpdateConfig(config) => {
                 self.config = config;
