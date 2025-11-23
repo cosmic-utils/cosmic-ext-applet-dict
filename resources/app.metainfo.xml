@@ -39,13 +39,16 @@
       </caption>
     </screenshot>
   </screenshots>
+  <provides>
+    <id>com.system76.CosmicApplet</id>
+  </provides>
   <releases>
-    <release version="0.1.0" date="2025-11-15">
+    <release version="0.1.1" date="2025-11-23">
       <url type="details">
-        https://github.com/cappsyco/cosmic-ext-applet-dict/releases/tag/v0.1.0
+        https://github.com/cappsyco/cosmic-ext-applet-dict/releases/tag/v0.1.1
       </url>
       <description>
-        <p>0.1.0 - Initial release including:</p>
+        <p>0.1.1 - Initial release including:</p>
         <ul>
           <li>A full, searchable English dictionary</li>
           <li>A button to give you a random entry</li>
