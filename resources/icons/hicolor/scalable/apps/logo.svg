@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.56556252"
+     inkscape:cx="257.26599"
+     inkscape:cy="368.65951"
+     inkscape:window-width="1707"
+     inkscape:window-height="998"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <path
+     d="M 4.1141406,18.901278 V 6.283905 c 0,-1.1041186 0,-1.6561876 0.2148891,-2.0779038 C 4.5180335,3.8350406 4.8196279,3.533446 5.1905784,3.3444419 5.6123032,3.1295621 6.1643655,3.1295621 7.2684872,3.1295621 h 9.4630288 c 1.104118,0 1.656226,0 2.077922,0.2148798 0.370932,0.1890041 0.672567,0.4905987 0.861532,0.8615593 0.214889,0.4217162 0.214889,0.9737852 0.214889,2.0779038 V 16.929813 H 6.0856102 c -1.0888065,0 -1.9714696,0.882624 -1.9714696,1.971465 z m 0,0 c 0,1.088839 0.8826631,1.971462 1.9714696,1.971462 H 19.885859 M 9.0428007,7.0724908 H 14.957195 M 9.0428007,11.01542 h 5.9143943 m 3.942931,5.914393 v 3.942927"
+     stroke="#000000"
+     stroke-width="1.97141"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     id="path1-6"
+     style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-opacity:1;stroke-width:2.28642;stroke-dasharray:none" />
+  <g
+     id="g2"
+     transform="matrix(0.86978747,0,0,0.86978747,1.5625505,1.5625505)">
+    <rect
+       style="fill:#e8d8c9;fill-opacity:1;stroke:none;stroke-width:0.0231355;stroke-opacity:1"
+       id="rect2"
+       width="15.508068"
+       height="3.1590502"
+       x="3.8291521"
+       y="18.14061" />
+    <rect
+       style="fill:#c17132;fill-opacity:1;stroke:none;stroke-width:0.0264203;stroke-opacity:1"
+       id="rect1"
+       width="16.397547"
+       height="14.669271"
+       x="3.9727457"
+       y="2.5140502" />
+    <path
+       d="M 2.9336057,19.934418 V 5.4281876 c 0,-1.2694084 0,-1.904124 0.2470479,-2.3889722 C 3.3979524,2.6127209 3.7446966,2.2659767 4.1711911,2.0486779 4.6560393,1.80163 5.2907549,1.80163 6.5601633,1.80163 H 17.439836 c 1.269409,0 1.90417,0 2.388995,0.2470479 0.42646,0.2172988 0.77325,0.564043 0.990504,0.9905375 0.247059,0.4848482 0.247059,1.1195638 0.247059,2.3889722 V 17.667819 H 5.2002042 c -1.2518084,0 -2.2665985,1.014756 -2.2665985,2.266599 z m 0,0 c 0,1.251842 1.0147901,2.266598 2.2665985,2.266598 H 21.066394 M 8.6001021,6.3348271 H 15.399898 M 8.6001021,10.868024 h 6.7997959 m 4.533197,6.799795 v 4.533197"
+       stroke="#000000"
+       stroke-width="2.2666"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path1"
+       style="fill:none;fill-opacity:1;stroke:#5e280e;stroke-opacity:1" />
+  </g>
+</svg>

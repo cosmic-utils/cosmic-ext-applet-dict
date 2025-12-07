@@ -17,6 +17,7 @@ vendor.tar
 /.flatpak-builder
 /repo
 /flatpak-out
+/flatpak
 *.deb
 *.rpm
 /.lapce

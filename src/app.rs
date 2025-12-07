@@ -180,7 +180,7 @@ impl cosmic::Application for AppModel {
                         .max_width(372.0)
                         .min_width(300.0)
                         .min_height(200.0)
-                        .max_height(1080.0);
+                        .max_height(800.0);
                     get_popup(popup_settings)
                 };
             }

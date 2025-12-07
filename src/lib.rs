@@ -19,7 +19,7 @@ pub fn fetch_words(search_q: Option<&str>) -> Result<Vec<Entry>, sqlite::Error> 
 
     let query = match search_q {
         Some(q) => format!(
-            "SELECT id, word FROM words WHERE word LIKE '{}%' ORDER BY word LIMIT 10",
+            "SELECT id, word FROM words WHERE word LIKE '{}%' ORDER BY CASE WHEN word NOT LIKE '% %' THEN 0 ELSE 1 END, LOWER(word) ASC LIMIT 10",
             q
         ),
         None => {

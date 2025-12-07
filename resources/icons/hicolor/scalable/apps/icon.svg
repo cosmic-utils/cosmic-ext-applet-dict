@@ -1,4 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M4 19V6.2C4 5.0799 4 4.51984 4.21799 4.09202C4.40973 3.71569 4.71569 3.40973 5.09202 3.21799C5.51984 3 6.0799 3 7.2 3H16.8C17.9201 3 18.4802 3 18.908 3.21799C19.2843 3.40973 19.5903 3.71569 19.782 4.09202C20 4.51984 20 5.0799 20 6.2V17H6C4.89543 17 4 17.8954 4 19ZM4 19C4 20.1046 4.89543 21 6 21H20M9 7H15M9 11H15M19 17V21" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="icon.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.35919857"
+     inkscape:cx="263.08568"
+     inkscape:cy="380.01265"
+     inkscape:window-width="1707"
+     inkscape:window-height="998"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <path
+     d="M 2.9336057,19.934418 V 5.4281876 c 0,-1.2694084 0,-1.904124 0.2470479,-2.3889722 C 3.3979524,2.6127209 3.7446966,2.2659767 4.1711911,2.0486779 4.6560393,1.80163 5.2907549,1.80163 6.5601633,1.80163 H 17.439836 c 1.269409,0 1.90417,0 2.388995,0.2470479 0.42646,0.2172988 0.77325,0.564043 0.990504,0.9905375 0.247059,0.4848482 0.247059,1.1195638 0.247059,2.3889722 V 17.667819 H 5.2002042 c -1.2518084,0 -2.2665985,1.014756 -2.2665985,2.266599 z m 0,0 c 0,1.251842 1.0147901,2.266598 2.2665985,2.266598 H 21.066394 M 8.6001021,6.3348271 H 15.399898 M 8.6001021,10.868024 h 6.7997959 m 4.533197,6.799795 v 4.533197"
+     stroke="#000000"
+     stroke-width="2.2666"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     id="path1" />
 </svg>
