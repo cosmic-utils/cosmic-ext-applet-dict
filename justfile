@@ -12,8 +12,8 @@ appdata-dst := clean(rootdir / prefix) / 'share' / 'appdata' / appdata
 dict-dst := clean(rootdir / prefix) / 'share' / appid / 'wordset.db'
 icons-src := 'resources' / 'icons' / 'hicolor'
 icons-dst := clean(rootdir / prefix) / 'share' / 'icons' / 'hicolor'
-icon-svg-src := icons-src / 'scalable' / 'apps' / 'icon.svg'
-icon-svg-dst := icons-dst / 'scalable' / 'apps' / appid + '-symbolic.svg'
+icon-svg-src := icons-src / 'scalable' / 'apps' / 'logo.svg'
+icon-svg-dst := icons-dst / 'scalable' / 'apps' / appid + '.svg'
 
 # Default recipe which runs `just build-release`
 default: build-release
