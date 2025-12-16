@@ -74,14 +74,14 @@ impl cosmic::Application for AppModel {
                 ))
                 .symbolic(true),
             )
-            .on_press(Message::TogglePopup)
+            .on_press_down(Message::TogglePopup)
             .into()
     }
 
     fn view_window(&self, _id: Id) -> Element<'_, Self::Message> {
         let mut content_list = widget::column().padding(8).spacing(0);
 
-        // quick search
+        // search
         content_list = content_list.push(container(row!(
             widget::text_input(fl!("search"), self.search_text.clone())
                 .on_input(move |value| Message::SearchInput(value.clone()))
