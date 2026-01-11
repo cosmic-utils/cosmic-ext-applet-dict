@@ -16,7 +16,7 @@ just build-release
 sudo just install
 ```
 
-## Flatpak installation (not yet active)
+## Flatpak installation
 
 By far the best way to install the Logo Menu is through the official COSMIC™ Flatpak repository. Firstly, ensure you have Flatpak itself installed. You then should be able to search for and install Logo Menu from the COSMIC™ Store, under the Applets category. Alternatively, you can ensure you have the correct repo enabled and install through the command line.
 
