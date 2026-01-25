@@ -6,12 +6,9 @@ license = "GPL-3.0-only"
 description = "An English dictionary applet for the COSMIC desktop."
 repository = "https://github.com/cappsyco/cosmic-ext-applet-dict"
 
-[build-dependencies]
-vergen = { version = "8", features = ["git", "gitcl"] }
-
 [dependencies]
 i18n-embed-fl = "0.10.0"
-rust-embed = "8.5.0"
+rust-embed = "8.11.0"
 sqlite = "0.37.0"
 
 [dependencies.i18n-embed]
@@ -21,7 +18,7 @@ features = ["fluent-system", "desktop-requester"]
 [dependencies.libcosmic]
 git = "https://github.com/pop-os/libcosmic.git"
 default-features = false
-features = ["applet", "wayland"]
+features = ["applet", "applet-token", "wayland"]
 
 [features]
 flatpak = []
