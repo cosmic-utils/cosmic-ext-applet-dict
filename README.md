@@ -8,7 +8,7 @@ We use [our own fork of the Wordset Dictionary](https://github.com/cappsyco/word
 
 ## Flatpak installation
 
-By far the best way to install the Logo Menu is through the official COSMIC™ Flatpak repository. Firstly, ensure you have Flatpak itself installed. You then should be able to search for and install Logo Menu from the COSMIC™ Store, under the Applets category. Alternatively, you can ensure you have the correct repo enabled and install through the command line.
+By far the best way to install the applet is through the official COSMIC™ Flatpak repository. Firstly, ensure you have Flatpak itself installed. You then should be able to search for and install the applet from the COSMIC™ Store, under the Applets category. Alternatively, you can ensure you have the correct repo enabled and install through the command line.
 
 ```sh
 flatpak remote-add --if-not-exists --user cosmic https://apt.pop-os.org/cosmic/cosmic.flatpakrepo
@@ -21,8 +21,8 @@ The applet can be installed directly from [the AUR](https://aur.archlinux.org/pa
 
 ```sh
 sudo pacman -S base-devel git
-git clone https://aur.archlinux.org/cosmic-ext-applet-logomenu-git.git
-cd cosmic-ext-applet-logomenu-git && makepkg -si
+git clone https://aur.archlinux.org/cosmic-ext-applet-dict-git.git
+cd cosmic-ext-applet-dict-git && makepkg -si
 ```
 
 ## Manual installation
