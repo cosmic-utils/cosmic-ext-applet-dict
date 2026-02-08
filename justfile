@@ -82,7 +82,7 @@ flatpak-builder:
 
 # Update flatpak cargo-sources.json
 flatpak-cargo-sources:
-    python3 ./resources/scripts/flatpak-cargo-generator.py ./Cargo.lock -o ./flatpak/cargo-sources.json
+    mkdir -p flatpak && python3 ./resources/scripts/flatpak-cargo-generator.py ./Cargo.lock -o ./flatpak/cargo-sources.json
 
 # Vendor dependencies locally
 vendor:
