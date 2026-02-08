@@ -17,7 +17,7 @@ flatpak install dev.cappsy.CosmicExtAppletDict
 
 ## Arch User Repository installation
 
-The applet can be installed directly from [one package in the AUR](https://aur.archlinux.org/packages/cosmic-ext-applet-dict-git), and this will get you very latest code and not be tied to tagged releases. You will need `base-devel` and `git` if you don't have them already.
+The applet can be installed directly from [the AUR](https://aur.archlinux.org/packages/cosmic-ext-applet-dict-git), and this will get you very latest code and not be tied to tagged releases. You will need `base-devel` and `git` if you don't have them already.
 
 ```sh
 sudo pacman -S base-devel git
