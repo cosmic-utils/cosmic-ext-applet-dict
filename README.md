@@ -4,7 +4,7 @@ An English language dictionary applet, perfect for quick access searching for wo
 
 We use [our own fork of the Wordset Dictionary](https://github.com/cappsyco/wordset-dictionary), so please submit any additions or corrections there so we can guarantee these changes make it into the applet.
 
-![A view of the open applet showing the search box, some results and the random link at the bottom.](https://raw.githubusercontent.com/cappsyco/cosmic-ext-applet-dict/main/resources/screenshots/screen1.jpg)
+![A view of the open applet showing the search box, some results and the random link at the bottom.](https://raw.githubusercontent.com/cosmic-utils/cosmic-ext-applet-dict/main/resources/screenshots/screen1.jpg)
 
 ## Flatpak installation
 
@@ -30,7 +30,7 @@ cd cosmic-ext-applet-dict-git && makepkg -si
 You're going to need to make sure you have the ability to compile Rust binaries, along with `git` and `just`
 
 ```sh
-git clone https://github.com/cappsyco/cosmic-ext-applet-dict && cd cosmic-ext-applet-dict
+git clone https://github.com/cosmic-utils/cosmic-ext-applet-dict && cd cosmic-ext-applet-dict
 just build-release
 sudo just install
 ```
