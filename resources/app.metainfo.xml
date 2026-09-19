@@ -20,9 +20,11 @@
   </url>
   <name>Dictionary</name>
   <name xml:lang="cs">Slovník</name>
+  <name xml:lang="pl">Słownik</name>
   <summary>An English dictionary applet for the COSMIC™ desktop</summary>
   <summary xml:lang="cs">Applet anglického slovníku pro prostředí COSMIC™</summary>
   <summary xml:lang="uk">Віджет словника англійської мови для COSMIC™</summary>
+  <summary xml:lang="pl">Aplet słownika języka angielskiego dla środowiska COSMIC™</summary>
   <icon type="remote" width="64" height="64" scale="1">
     https://github.com/cappsyco/cosmic-ext-applet-dict/raw/main/resources/icons/hicolor/scalable/apps/logo.svg
   </icon>
@@ -31,12 +33,15 @@
     <p>An English language dictionary applet, perfect for quick access searching for words and definitions, or cycling through some random words to further enrich your knowledge of the English language.</p>
     <p xml:lang="cs">Applet slovníku anglického jazyka, ideální pro rychlé vyhledávání slov a jejich definic, nebo pro procházení náhodných slov, která obohatí vaše znalosti angličtiny.</p>
     <p xml:lang="uk">Віджет англійського словника: швидкий пошук слів та тлумачень або слів навмання для розширення словникового запасу.</p>
+    <p xml:lang="pl">Aplet słownika języka angielskiego dla, idealny do szybkiego dostępu i wyszukiwania słów i definicji, albo do wyszukiwania losowych słów by poprawiać swoją znajomość angielszczyzny.</p>
     <p>Contains all English words, including profanity and offensive terms. The random function could also show any of these.</p>
     <p xml:lang="cs">Obsahuje všechna anglická slova, včetně sprostých a urážlivých výrazů. Funkce náhodného výběru může zobrazit i tato slova.</p>
     <p xml:lang="uk">Велика база англійських слів, включно з грубощами та образливими термінами. Функція слово навмання також може показувати такі слова.</p>
+    <p xml:lang="pl">Zawiera wszystkie anglieskie słowa, również niecenzuralne oraz obraźliwe. Funkcja losowego słowa może pokazać każde z owych.</p>
     <p>Based on the open source Wordset Dictionary. Please visit the repository for details on submitting additions and corrections.</p>
     <p xml:lang="cs">Založeno na open-source Wordset Dictionary. Podrobnosti o přidávání nového obsahu a opravách naleznete v repozitáři.</p>
     <p xml:lang="uk">Створено на основі відкритого словника Wordset Dictionary. Щоб дізнатися більше про додавання та виправлення слів відвідайте сховище.</p>
+    <p xml:lang="pl">Jest oparta na otwartoźródłowym Wordset Dictionary. Odwiedź repozytorium po szczegóły, oraz by ów słownik uzupełnić lub poprawić.</p>
   </description>
   <screenshots>
     <screenshot type="default">
@@ -51,6 +56,9 @@
       </caption>
       <caption xml:lang="uk">
         Віджет у відкритому вигляді, що показує пошукове поле, результати пошуку та випадкове посилання внизу.
+      </caption>
+      <caption xml:lang="pl">
+        Otwarty aplet pokazujący pole wyszukiwania, rezultaty wyszukiwania oraz losowy link na spodzie.
       </caption>
     </screenshot>
   </screenshots>
