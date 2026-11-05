@@ -955,6 +955,7 @@ dependencies = [
  "libcosmic",
  "rust-embed",
  "sqlite",
+ "tokio",
 ]
 
 [[package]]
