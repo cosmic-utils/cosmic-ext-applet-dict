@@ -151,13 +151,11 @@ impl cosmic::Application for AppModel {
             // search
             content_list = content_list.push(container(row!(
                 widget::search_input(fl!("search"), self.search_text.clone())
-                    .style(results_search_style())
                     .on_input(move |value| Message::SearchInput(value.clone()))
                     .on_submit(move |_| Message::Search)
                     .on_clear(Message::SearchClear),
                 Space::new().width(space_xxs),
                 widget::button::icon(widget::icon::from_name("media-playlist-shuffle-symbolic"))
-                    .class(results_button_style())
                     .on_press(Message::Random),
             )));
 
@@ -203,7 +201,7 @@ impl cosmic::Application for AppModel {
 
                 let results = container(scrollable(entries_list))
                     .width(Length::Fill)
-                    .style(results_container_style);
+                    .class(theme::Container::Card);
 
                 content_list = content_list.push(results);
             }
@@ -306,6 +304,7 @@ impl cosmic::Application for AppModel {
         Task::none()
     }
 
+    /* Styling */
     fn style(&self) -> Option<cosmic::iced::theme::Style> {
         Some(cosmic::applet::style())
     }
@@ -344,94 +343,5 @@ fn capitalize_first(text: &str) -> String {
     match chars.next() {
         Some(first) => first.to_uppercase().chain(chars).collect(),
         None => String::new(),
-    }
-}
-
-fn results_background(theme: &cosmic::Theme) -> cosmic::iced::Color {
-    theme
-        .cosmic()
-        .background(theme.transparent)
-        .component
-        .base
-        .into()
-}
-
-type TextInputAppearanceFn =
-    fn(&cosmic::Theme, &theme::TextInput) -> cosmic::widget::text_input::Appearance;
-type ButtonAppearanceFn =
-    fn(&cosmic::Theme, bool, bool, &theme::Button) -> cosmic::widget::button::Style;
-
-fn results_search_appearance(
-    theme: &cosmic::Theme,
-    appearance: TextInputAppearanceFn,
-) -> cosmic::widget::text_input::Appearance {
-    let mut style = appearance(theme, &theme::TextInput::Search);
-    style.background = results_background(theme).into();
-    style
-}
-
-fn results_search_style() -> theme::TextInput {
-    theme::TextInput::Custom {
-        active: Box::new(|theme| {
-            results_search_appearance(theme, cosmic::widget::text_input::StyleSheet::active)
-        }),
-        error: Box::new(|theme| {
-            results_search_appearance(theme, cosmic::widget::text_input::StyleSheet::error)
-        }),
-        hovered: Box::new(|theme| {
-            results_search_appearance(theme, cosmic::widget::text_input::StyleSheet::hovered)
-        }),
-        focused: Box::new(|theme| {
-            results_search_appearance(theme, cosmic::widget::text_input::StyleSheet::focused)
-        }),
-        disabled: Box::new(|theme| {
-            results_search_appearance(theme, cosmic::widget::text_input::StyleSheet::disabled)
-        }),
-    }
-}
-
-fn results_button_appearance(
-    theme: &cosmic::Theme,
-    focused: bool,
-    appearance: ButtonAppearanceFn,
-) -> cosmic::widget::button::Style {
-    let mut style = appearance(theme, focused, false, &theme::Button::Standard);
-    style.background = Some(results_background(theme).into());
-    style
-}
-
-fn results_button_style() -> theme::Button {
-    theme::Button::Custom {
-        active: Box::new(|focused, theme| {
-            results_button_appearance(theme, focused, cosmic::widget::button::Catalog::active)
-        }),
-        disabled: Box::new(|theme| {
-            let mut style =
-                cosmic::widget::button::Catalog::disabled(theme, &theme::Button::Standard);
-            style.background = Some(results_background(theme).into());
-            style
-        }),
-        hovered: Box::new(|focused, theme| {
-            results_button_appearance(theme, focused, cosmic::widget::button::Catalog::hovered)
-        }),
-        pressed: Box::new(|focused, theme| {
-            results_button_appearance(theme, focused, cosmic::widget::button::Catalog::pressed)
-        }),
-    }
-}
-
-fn results_container_style(theme: &cosmic::Theme) -> cosmic::iced::widget::container::Style {
-    let cosmic = theme.cosmic();
-    let bg = cosmic.background(theme.transparent);
-
-    cosmic::iced::widget::container::Style {
-        background: Some(results_background(theme).into()),
-        text_color: Some(bg.component.on.into()),
-        border: cosmic::iced::Border {
-            radius: cosmic.corner_radii.radius_s.into(),
-            width: 1.0,
-            color: bg.divider.into(),
-        },
-        ..Default::default()
     }
 }
