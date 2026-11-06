@@ -327,6 +327,7 @@ pub fn build_about() -> About {
             ),
         ])
         .license(env!("CARGO_PKG_LICENSE"))
+        .comments(env!("CARGO_PKG_DESCRIPTION"))
 }
 
 /* Helper functions */
