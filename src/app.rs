@@ -1,20 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
+use std::fmt::Write as _;
 use std::time::Duration;
 
 use crate::config::Config;
 use crate::fl;
+use cosmic::Application;
 use cosmic::cosmic_config::{self, CosmicConfigEntry};
 use cosmic::cosmic_theme::Spacing;
+use cosmic::iced::Alignment::Center;
+use cosmic::iced::mouse;
 use cosmic::iced::{Length, Limits, Subscription, window::Id};
 use cosmic::prelude::*;
 use cosmic::theme;
 use cosmic::widget::{self, Space, about, about::About, column, container, row, scrollable};
-use cosmic_ext_applet_dict::{Entry, fetch_words};
+use cosmic_ext_applet_dict::{Entry, fetch_words, search_query};
 
 const APP_LOGO: &[u8] = include_bytes!("../resources/icons/hicolor/scalable/apps/logo.svg");
+const STAR_OUTLINE_ICON: &[u8] = include_bytes!("../resources/icons/star-outline-symbolic.svg");
 const REPOSITORY_URL: &str = env!("CARGO_PKG_REPOSITORY");
-const SEARCH_DEBOUNCE: Duration = Duration::from_millis(500);
+const SEARCH_DEBOUNCE: Duration = Duration::from_millis(300);
 
 #[derive(Default)]
 pub struct AppModel {
@@ -40,6 +45,9 @@ pub enum Message {
     Random,
     ChangeView(View),
     OpenUrl(String),
+    ToggleBookmark(String),
+    CopyToClipboard(String),
+    ViewBookmark(String),
 }
 
 #[derive(Debug, Clone, Default, PartialEq)]
@@ -51,12 +59,24 @@ pub enum View {
 }
 
 impl AppModel {
-    fn search(&mut self) {
+    fn search(&mut self, limit: Option<u8>) {
         self.entries = if self.search_text.is_empty() {
             Vec::new()
         } else {
-            fetch_words(Some(&self.search_text)).unwrap_or_default()
+            let query = search_query(Some(&self.search_text), limit);
+            fetch_words(&query).unwrap_or_default()
         };
+    }
+
+    fn save_config(&self) {
+        match cosmic_config::Config::new(Self::APP_ID, Config::VERSION) {
+            Ok(context) => {
+                if let Err(err) = self.config.write_entry(&context) {
+                    eprintln!("Failed to save config: {err}");
+                }
+            }
+            Err(err) => eprintln!("Failed to access config: {err}"),
+        }
     }
 }
 
@@ -78,14 +98,16 @@ impl cosmic::Application for AppModel {
         core: cosmic::Core,
         _flags: Self::Flags,
     ) -> (Self, Task<cosmic::Action<Self::Message>>) {
+        let config = cosmic_config::Config::new(Self::APP_ID, Config::VERSION)
+            .map(|context| match Config::get_entry(&context) {
+                Ok(config) => config,
+                Err((_errors, config)) => config,
+            })
+            .unwrap_or_default();
+
         let app = AppModel {
             core,
-            config: cosmic_config::Config::new(Self::APP_ID, Config::VERSION)
-                .map(|context| match Config::get_entry(&context) {
-                    Ok(config) => config,
-                    Err((_errors, config)) => config,
-                })
-                .unwrap_or_default(),
+            config,
             about_page: build_about(),
             ..Default::default()
         };
@@ -119,37 +141,77 @@ impl cosmic::Application for AppModel {
             ..
         } = theme::active().cosmic().spacing;
 
-        let mut content_list = widget::column([])
+        let mut view_content = column!()
             .padding([space_xs, space_s, space_s, space_s])
-            .spacing(0);
+            .spacing(0)
+            .width(Length::Fill);
 
         if self.active_view == View::About || self.active_view == View::Bookmarks {
             // nav bar
-            content_list = content_list.push(container(row!(
-                widget::button::icon(widget::icon::from_name("go-previous-symbolic").size(16))
-                    .label("Back")
-                    .on_press(Message::ChangeView(View::Main)),
-            )));
-            content_list = content_list.push(Space::new().height(space_xxs));
+            view_content = view_content
+                .push(container(row!(
+                    widget::button::icon(widget::icon::from_name("go-previous-symbolic").size(16))
+                        .label("Back")
+                        .on_press(Message::ChangeView(View::Main)),
+                )))
+                .push(Space::new().height(space_xxs));
 
+            // page specific content
             if self.active_view == View::About {
-                content_list = content_list.push(about::about(&self.about_page, |url| {
+                view_content = view_content.push(about::about(&self.about_page, |url| {
                     Message::OpenUrl(url.to_owned())
                 }));
+            } else if self.active_view == View::Bookmarks {
+                view_content = view_content.push(widget::text::title4(fl!("bookmarks")));
+
+                let mut bookmarks_list = column!().spacing(0).width(Length::Fill);
+                if !self.config.bookmarks.is_empty() {
+                    for bookmark in &self.config.bookmarks {
+                        bookmarks_list = bookmarks_list.push(Space::new().height(space_xs)).push(
+                            container(
+                                row!(
+                                    widget::mouse_area(
+                                        widget::text::heading(capitalize_first(&bookmark))
+                                            .width(Length::Fill),
+                                    )
+                                    .on_press(Message::ViewBookmark(bookmark.clone()))
+                                    .interaction(mouse::Interaction::Pointer),
+                                    widget::button::icon(widget::icon::from_name(
+                                        "edit-delete-symbolic"
+                                    ))
+                                    .icon_size(15)
+                                    .on_press(Message::ToggleBookmark(bookmark.clone())),
+                                )
+                                .align_y(Center),
+                            )
+                            .class(theme::Container::Card)
+                            .padding([space_xxs, space_xs]),
+                        );
+                    }
+                    view_content = view_content.push(
+                        scrollable(bookmarks_list)
+                            .spacing(space_xxs)
+                            .width(Length::Fill),
+                    );
+                } else {
+                    view_content = view_content
+                        .push(Space::new().height(space_xs))
+                        .push(widget::text::heading(fl!("no-bookmarks")));
+                }
             }
         } else {
             // nav bar
-            content_list = content_list.push(container(row!(
+            view_content = view_content.push(container(row!(
                 widget::button::icon(widget::icon::from_name("dialog-information-symbolic"))
                     .on_press(Message::ChangeView(View::About)),
                 Space::new().width(Length::Fill),
                 widget::button::icon(widget::icon::from_name("insert-star-symbolic"))
-                    .on_press_maybe(None),
+                    .on_press(Message::ChangeView(View::Bookmarks)),
             )));
-            content_list = content_list.push(Space::new().height(space_xxs));
+            view_content = view_content.push(Space::new().height(space_xxs));
 
             // search
-            content_list = content_list.push(container(row!(
+            view_content = view_content.push(container(row!(
                 widget::search_input(fl!("search"), self.search_text.clone())
                     .on_input(move |value| Message::SearchInput(value.clone()))
                     .on_submit(move |_| Message::Search)
@@ -160,14 +222,31 @@ impl cosmic::Application for AppModel {
             )));
 
             // build entries in scrollable list
-            let mut entries_list = widget::column([]).spacing(0);
+            let mut entries_list = column!().spacing(0).width(Length::Fill);
 
             if !self.entries.is_empty() {
-                content_list = content_list.push(Space::new().height(space_s));
+                view_content = view_content.push(Space::new().height(space_s));
                 let mut entry_i = 1;
                 for entry in &self.entries {
-                    let mut entry_content =
-                        column!(widget::text::title4(capitalize_first(&entry.word)),);
+                    let bookmark_icon: widget::icon::Handle =
+                        if self.config.is_bookmarked(&entry.word) {
+                            widget::icon::from_name("user-bookmarks-symbolic").into()
+                        } else {
+                            widget::icon::from_svg_bytes(STAR_OUTLINE_ICON).symbolic(true)
+                        };
+
+                    let mut entry_content = column!(
+                        row!(
+                            widget::text::title4(capitalize_first(&entry.word)).width(Length::Fill),
+                            widget::button::icon(widget::icon::from_name("edit-copy-symbolic"))
+                                .icon_size(15)
+                                .on_press(Message::CopyToClipboard(entry_to_text(entry))),
+                            widget::button::icon(bookmark_icon)
+                                .icon_size(15)
+                                .on_press(Message::ToggleBookmark(entry.word.clone())),
+                        )
+                        .align_y(Center)
+                    );
 
                     let mut def_i = 1;
                     let mut last_sp = "";
@@ -188,6 +267,7 @@ impl cosmic::Application for AppModel {
                             )))
                             .padding([space_xxxs, 0, 0, space_xxs]),
                         );
+
                         def_i += 1;
                     }
 
@@ -199,15 +279,19 @@ impl cosmic::Application for AppModel {
                     entry_i += 1;
                 }
 
-                let results = container(scrollable(entries_list))
-                    .width(Length::Fill)
-                    .class(theme::Container::Card);
+                let results = scrollable(
+                    container(entries_list)
+                        .width(Length::Fill)
+                        .class(theme::Container::Card),
+                )
+                .spacing(space_xxs)
+                .width(Length::Fill);
 
-                content_list = content_list.push(results);
+                view_content = view_content.push(results);
             }
         }
 
-        self.core.applet.popup_container(content_list).into()
+        self.core.applet.popup_container(view_content).into()
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
@@ -236,11 +320,11 @@ impl cosmic::Application for AppModel {
             }
             Message::Search => {
                 self.search_generation = self.search_generation.wrapping_add(1);
-                self.search();
+                self.search(Some(10));
             }
             Message::SearchDebounced(generation) => {
                 if generation == self.search_generation {
-                    self.search();
+                    self.search(Some(10));
                 }
             }
             Message::SearchClear => {
@@ -249,9 +333,10 @@ impl cosmic::Application for AppModel {
                 self.entries.clear();
             }
             Message::Random => {
-                self.search_generation = self.search_generation.wrapping_add(1);
-                self.entries = fetch_words(None).unwrap_or(vec![]);
+                let query = search_query(None, Some(1));
+                self.entries = fetch_words(&query).unwrap_or_default();
                 self.search_text = String::new();
+                self.search_generation = self.search_generation.wrapping_add(1);
             }
             Message::UpdateConfig(config) => {
                 self.config = config;
@@ -300,6 +385,19 @@ impl cosmic::Application for AppModel {
                 .discard()
                 .map(cosmic::Action::App);
             }
+            Message::ToggleBookmark(word) => {
+                self.config.toggle_bookmark(&word);
+                self.save_config();
+            }
+            Message::CopyToClipboard(text) => {
+                return cosmic::iced::clipboard::write(text).map(cosmic::Action::App);
+            }
+            Message::ViewBookmark(word) => {
+                self.search_text = word;
+                self.active_view = View::Main;
+                self.search_generation = self.search_generation.wrapping_add(1);
+                self.search(Some(1));
+            }
         }
         Task::none()
     }
@@ -337,6 +435,32 @@ async fn open_url(url: String) -> Result<(), ashpd::Error> {
         .send_uri(&uri)
         .await?;
     Ok(())
+}
+
+fn entry_to_text(entry: &Entry) -> String {
+    let mut text = capitalize_first(&entry.word);
+    let mut current_speech_part: Option<&str> = None;
+    let mut definition_index = 0;
+
+    for definition in &entry.defs {
+        if current_speech_part == Some(definition.speech_part.as_str()) {
+            definition_index += 1;
+        } else {
+            current_speech_part = Some(definition.speech_part.as_str());
+            definition_index = 1;
+            text.push_str("\n\n");
+            text.push_str(&capitalize_first(&definition.speech_part));
+        }
+
+        text.push('\n');
+        let _ = write!(
+            text,
+            "{definition_index}. {}",
+            capitalize_first(&definition.def)
+        );
+    }
+
+    text
 }
 
 fn capitalize_first(text: &str) -> String {

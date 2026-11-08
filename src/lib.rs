@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 #[derive(Debug)]
 pub struct Entry {
+    pub id: String,
     pub word: String,
     pub defs: Vec<Definition>,
 }
@@ -14,18 +15,20 @@ pub struct Definition {
     pub example: String,
 }
 
-pub fn fetch_words(search_q: Option<&str>) -> Result<Vec<Entry>, sqlite::Error> {
-    let connection = sqlite::open(get_dictionary_path())?;
-
-    let query = match search_q {
+#[must_use]
+pub fn search_query(search_q: Option<&str>, limit: Option<u8>) -> String {
+    let limit = limit.unwrap_or(10);
+    match search_q {
         Some(q) => format!(
-            "SELECT id, word FROM words WHERE word LIKE '{}%' ORDER BY CASE WHEN word NOT LIKE '% %' THEN 0 ELSE 1 END, LOWER(word) ASC LIMIT 10",
-            q
+            "SELECT id, word FROM words WHERE word LIKE '{}%' ESCAPE '\\' ORDER BY CASE WHEN word NOT LIKE '% %' THEN 0 ELSE 1 END, LOWER(word) ASC LIMIT {limit}",
+            escape_like(q)
         ),
-        None => {
-            format!("SELECT id, word FROM words ORDER BY RANDOM() LIMIT 1")
-        }
-    };
+        None => format!("SELECT id, word FROM words ORDER BY RANDOM() LIMIT {limit}"),
+    }
+}
+
+pub fn fetch_words(query: &str) -> Result<Vec<Entry>, sqlite::Error> {
+    let connection = sqlite::open(get_dictionary_path())?;
     let mut statement = connection.prepare(query)?;
     let mut entries = vec![];
     while let Ok(State::Row) = statement.next() {
@@ -33,10 +36,7 @@ pub fn fetch_words(search_q: Option<&str>) -> Result<Vec<Entry>, sqlite::Error> 
         let word = statement.read::<String, _>("word").unwrap_or_default();
         let defs = fetch_word_definitions(&connection, &id).unwrap_or_default();
 
-        entries.push(Entry {
-            word: word,
-            defs: defs,
-        });
+        entries.push(Entry { id, word, defs });
     }
 
     Ok(entries)
@@ -47,7 +47,7 @@ fn fetch_word_definitions(
     word_id: &str,
 ) -> Result<Vec<Definition>, sqlite::Error> {
     let query = format!(
-        "SELECT def, speech_part, example FROM definitions WHERE word_id = '{}'",
+        "SELECT def, speech_part, example FROM definitions WHERE word_id = '{}' GROUP BY (id)",
         word_id
     );
     let mut statement = connection.prepare(query)?;
@@ -63,6 +63,14 @@ fn fetch_word_definitions(
     }
 
     Ok(definitions)
+}
+
+fn escape_like(value: &str) -> String {
+    value
+        .replace('\\', "\\\\")
+        .replace('%', "\\%")
+        .replace('_', "\\_")
+        .replace('\'', "''")
 }
 
 fn get_dictionary_path() -> PathBuf {
