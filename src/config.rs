@@ -9,8 +9,8 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn is_bookmarked(&self, id: &str) -> bool {
-        self.bookmarks.iter().any(|bookmark| bookmark == id)
+    pub fn is_bookmarked(&self, word: &str) -> bool {
+        self.bookmarks.iter().any(|bookmark| bookmark == word)
     }
 
     pub fn toggle_bookmark(&mut self, word: &str) {

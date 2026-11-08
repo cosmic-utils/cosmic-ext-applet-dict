@@ -14,7 +14,7 @@ use cosmic::iced::{Length, Limits, Subscription, window::Id};
 use cosmic::prelude::*;
 use cosmic::theme;
 use cosmic::widget::{self, Space, about, about::About, column, container, row, scrollable};
-use cosmic_ext_applet_dict::{Entry, fetch_words, search_query};
+use cosmic_ext_applet_dict::{Entry, random_words, search_words};
 
 const APP_LOGO: &[u8] = include_bytes!("../resources/icons/hicolor/scalable/apps/logo.svg");
 const STAR_OUTLINE_ICON: &[u8] = include_bytes!("../resources/icons/star-outline-symbolic.svg");
@@ -46,11 +46,11 @@ pub enum Message {
     ChangeView(View),
     OpenUrl(String),
     ToggleBookmark(String),
-    CopyToClipboard(String),
+    CopyWord(String),
     ViewBookmark(String),
 }
 
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq, Copy)]
 pub enum View {
     #[default]
     Main,
@@ -63,8 +63,7 @@ impl AppModel {
         self.entries = if self.search_text.is_empty() {
             Vec::new()
         } else {
-            let query = search_query(Some(&self.search_text), limit);
-            fetch_words(&query).unwrap_or_default()
+            search_words(&self.search_text, limit).unwrap_or_default()
         };
     }
 
@@ -133,165 +132,14 @@ impl cosmic::Application for AppModel {
     }
 
     fn view_window(&self, _id: Id) -> Element<'_, Self::Message> {
-        let Spacing {
-            space_xxxs,
-            space_xxs,
-            space_xs,
-            space_s,
-            ..
-        } = theme::active().cosmic().spacing;
+        let spacing = theme::active().cosmic().spacing;
+        let content = match self.active_view {
+            View::Main => self.search_view(&spacing),
+            View::About => self.about_view(&spacing),
+            View::Bookmarks => self.bookmarks_view(&spacing),
+        };
 
-        let mut view_content = column!()
-            .padding([space_xs, space_s, space_s, space_s])
-            .spacing(0)
-            .width(Length::Fill);
-
-        if self.active_view == View::About || self.active_view == View::Bookmarks {
-            // nav bar
-            view_content = view_content
-                .push(container(row!(
-                    widget::button::icon(widget::icon::from_name("go-previous-symbolic").size(16))
-                        .label("Back")
-                        .on_press(Message::ChangeView(View::Main)),
-                )))
-                .push(Space::new().height(space_xxs));
-
-            // page specific content
-            if self.active_view == View::About {
-                view_content = view_content.push(about::about(&self.about_page, |url| {
-                    Message::OpenUrl(url.to_owned())
-                }));
-            } else if self.active_view == View::Bookmarks {
-                view_content = view_content.push(widget::text::title4(fl!("bookmarks")));
-
-                let mut bookmarks_list = column!().spacing(0).width(Length::Fill);
-                if !self.config.bookmarks.is_empty() {
-                    for bookmark in &self.config.bookmarks {
-                        bookmarks_list = bookmarks_list.push(Space::new().height(space_xs)).push(
-                            container(
-                                row!(
-                                    widget::mouse_area(
-                                        widget::text::heading(capitalize_first(&bookmark))
-                                            .width(Length::Fill),
-                                    )
-                                    .on_press(Message::ViewBookmark(bookmark.clone()))
-                                    .interaction(mouse::Interaction::Pointer),
-                                    widget::button::icon(widget::icon::from_name(
-                                        "edit-delete-symbolic"
-                                    ))
-                                    .icon_size(15)
-                                    .on_press(Message::ToggleBookmark(bookmark.clone())),
-                                )
-                                .align_y(Center),
-                            )
-                            .class(theme::Container::Card)
-                            .padding([space_xxs, space_xs]),
-                        );
-                    }
-                    view_content = view_content.push(
-                        scrollable(bookmarks_list)
-                            .spacing(space_xxs)
-                            .width(Length::Fill),
-                    );
-                } else {
-                    view_content = view_content
-                        .push(Space::new().height(space_xs))
-                        .push(widget::text::heading(fl!("no-bookmarks")));
-                }
-            }
-        } else {
-            // nav bar
-            view_content = view_content.push(container(row!(
-                widget::button::icon(widget::icon::from_name("dialog-information-symbolic"))
-                    .on_press(Message::ChangeView(View::About)),
-                Space::new().width(Length::Fill),
-                widget::button::icon(widget::icon::from_name("insert-star-symbolic"))
-                    .on_press(Message::ChangeView(View::Bookmarks)),
-            )));
-            view_content = view_content.push(Space::new().height(space_xxs));
-
-            // search
-            view_content = view_content.push(container(row!(
-                widget::search_input(fl!("search"), self.search_text.clone())
-                    .on_input(move |value| Message::SearchInput(value.clone()))
-                    .on_submit(move |_| Message::Search)
-                    .on_clear(Message::SearchClear),
-                Space::new().width(space_xxs),
-                widget::button::icon(widget::icon::from_name("media-playlist-shuffle-symbolic"))
-                    .on_press(Message::Random),
-            )));
-
-            // build entries in scrollable list
-            let mut entries_list = column!().spacing(0).width(Length::Fill);
-
-            if !self.entries.is_empty() {
-                view_content = view_content.push(Space::new().height(space_s));
-                let mut entry_i = 1;
-                for entry in &self.entries {
-                    let bookmark_icon: widget::icon::Handle =
-                        if self.config.is_bookmarked(&entry.word) {
-                            widget::icon::from_name("user-bookmarks-symbolic").into()
-                        } else {
-                            widget::icon::from_svg_bytes(STAR_OUTLINE_ICON).symbolic(true)
-                        };
-
-                    let mut entry_content = column!(
-                        row!(
-                            widget::text::title4(capitalize_first(&entry.word)).width(Length::Fill),
-                            widget::button::icon(widget::icon::from_name("edit-copy-symbolic"))
-                                .icon_size(15)
-                                .on_press(Message::CopyToClipboard(entry_to_text(entry))),
-                            widget::button::icon(bookmark_icon)
-                                .icon_size(15)
-                                .on_press(Message::ToggleBookmark(entry.word.clone())),
-                        )
-                        .align_y(Center)
-                    );
-
-                    let mut def_i = 1;
-                    let mut last_sp = "";
-                    for def in &entry.defs {
-                        if last_sp != def.speech_part {
-                            entry_content = entry_content.push(
-                                container(widget::text::body(capitalize_first(&def.speech_part)))
-                                    .padding([space_xxs, 0, 0, 0]),
-                            );
-                            def_i = 1;
-                            last_sp = &def.speech_part;
-                        }
-                        entry_content = entry_content.push(
-                            container(widget::text::body(format!(
-                                "{}. {}",
-                                def_i,
-                                capitalize_first(&def.def)
-                            )))
-                            .padding([space_xxxs, 0, 0, space_xxs]),
-                        );
-
-                        def_i += 1;
-                    }
-
-                    entries_list = entries_list.push(entry_content.padding([space_xxs, space_xs]));
-                    if entry_i != self.entries.len() {
-                        entries_list = entries_list.push(widget::divider::horizontal::default());
-                    }
-
-                    entry_i += 1;
-                }
-
-                let results = scrollable(
-                    container(entries_list)
-                        .width(Length::Fill)
-                        .class(theme::Container::Card),
-                )
-                .spacing(space_xxs)
-                .width(Length::Fill);
-
-                view_content = view_content.push(results);
-            }
-        }
-
-        self.core.applet.popup_container(view_content).into()
+        self.core.applet.popup_container(content).into()
     }
 
     fn subscription(&self) -> Subscription<Self::Message> {
@@ -320,11 +168,11 @@ impl cosmic::Application for AppModel {
             }
             Message::Search => {
                 self.search_generation = self.search_generation.wrapping_add(1);
-                self.search(Some(10));
+                self.search(None);
             }
             Message::SearchDebounced(generation) => {
                 if generation == self.search_generation {
-                    self.search(Some(10));
+                    self.search(None);
                 }
             }
             Message::SearchClear => {
@@ -333,8 +181,7 @@ impl cosmic::Application for AppModel {
                 self.entries.clear();
             }
             Message::Random => {
-                let query = search_query(None, Some(1));
-                self.entries = fetch_words(&query).unwrap_or_default();
+                self.entries = random_words(Some(1)).unwrap_or_default();
                 self.search_text = String::new();
                 self.search_generation = self.search_generation.wrapping_add(1);
             }
@@ -346,7 +193,7 @@ impl cosmic::Application for AppModel {
                     cosmic::surface::surface_task(cosmic::surface::action::destroy_popup(p))
                 } else {
                     cosmic::surface::surface_task(cosmic::surface::action::app_popup(
-                        |_| Default::default(),
+                        |_| cosmic::surface::action::LiveSettings::default(),
                         |app: &mut AppModel| {
                             let new_id = Id::unique();
                             app.popup.replace(new_id);
@@ -389,8 +236,11 @@ impl cosmic::Application for AppModel {
                 self.config.toggle_bookmark(&word);
                 self.save_config();
             }
-            Message::CopyToClipboard(text) => {
-                return cosmic::iced::clipboard::write(text).map(cosmic::Action::App);
+            Message::CopyWord(word) => {
+                if let Some(entry) = self.entries.iter().find(|entry| entry.word == word) {
+                    return cosmic::iced::clipboard::write(entry_to_text(entry))
+                        .map(cosmic::Action::App);
+                }
             }
             Message::ViewBookmark(word) => {
                 self.search_text = word;
@@ -405,6 +255,208 @@ impl cosmic::Application for AppModel {
     /* Styling */
     fn style(&self) -> Option<cosmic::iced::theme::Style> {
         Some(cosmic::applet::style())
+    }
+}
+
+impl AppModel {
+    fn page_column<'a>(spacing: &Spacing) -> widget::Column<'a, Message, Theme> {
+        column!()
+            .padding([
+                spacing.space_xs,
+                spacing.space_s,
+                spacing.space_s,
+                spacing.space_s,
+            ])
+            .spacing(0)
+            .width(Length::Fill)
+    }
+
+    fn nav_bar<'a>() -> Element<'a, Message> {
+        container(row!(
+            widget::button::icon(widget::icon::from_name("dialog-information-symbolic"))
+                .on_press(Message::ChangeView(View::About)),
+            Space::new().width(Length::Fill),
+            widget::button::icon(widget::icon::from_name("insert-star-symbolic"))
+                .on_press(Message::ChangeView(View::Bookmarks)),
+        ))
+        .into()
+    }
+
+    fn back_nav_bar<'a>() -> Element<'a, Message> {
+        container(row!(
+            widget::button::icon(widget::icon::from_name("go-previous-symbolic").size(16))
+                .label(fl!("back"))
+                .on_press(Message::ChangeView(View::Main)),
+        ))
+        .into()
+    }
+
+    fn search_view<'a>(&'a self, spacing: &Spacing) -> Element<'a, Message> {
+        let mut view_content = Self::page_column(spacing)
+            .push(Self::nav_bar())
+            .push(Space::new().height(spacing.space_xxs))
+            .push(self.search_bar(spacing));
+
+        if !self.entries.is_empty() {
+            view_content = view_content
+                .push(Space::new().height(spacing.space_s))
+                .push(self.entries_view(spacing));
+        }
+
+        view_content.into()
+    }
+
+    fn about_view<'a>(&'a self, spacing: &Spacing) -> Element<'a, Message> {
+        Self::page_column(spacing)
+            .push(Self::back_nav_bar())
+            .push(Space::new().height(spacing.space_xxs))
+            .push(about::about(&self.about_page, |url| {
+                Message::OpenUrl(url.to_owned())
+            }))
+            .into()
+    }
+
+    fn bookmarks_view<'a>(&'a self, spacing: &Spacing) -> Element<'a, Message> {
+        let mut view_content = Self::page_column(spacing)
+            .push(Self::back_nav_bar())
+            .push(Space::new().height(spacing.space_xxs))
+            .push(widget::text::title4(fl!("bookmarks")));
+
+        if self.config.bookmarks.is_empty() {
+            view_content = view_content
+                .push(Space::new().height(spacing.space_xs))
+                .push(widget::text::heading(fl!("no-bookmarks")));
+        } else {
+            let mut bookmarks_list = column!().spacing(0).width(Length::Fill);
+
+            for bookmark in &self.config.bookmarks {
+                bookmarks_list = bookmarks_list
+                    .push(Space::new().height(spacing.space_xs))
+                    .push(
+                        container(
+                            row!(
+                                widget::mouse_area(
+                                    widget::text::heading(capitalize_first(bookmark))
+                                        .width(Length::Fill),
+                                )
+                                .on_press(Message::ViewBookmark(bookmark.clone()))
+                                .interaction(mouse::Interaction::Pointer),
+                                widget::button::icon(widget::icon::from_name(
+                                    "edit-delete-symbolic"
+                                ))
+                                .icon_size(15)
+                                .on_press(Message::ToggleBookmark(bookmark.clone()))
+                            )
+                            .align_y(Center),
+                        )
+                        .class(theme::Container::Card)
+                        .padding([spacing.space_xxs, spacing.space_xs]),
+                    );
+            }
+
+            view_content = view_content.push(
+                scrollable(bookmarks_list)
+                    .spacing(spacing.space_xxs)
+                    .width(Length::Fill),
+            );
+        }
+
+        view_content.into()
+    }
+
+    fn search_bar(&self, spacing: &Spacing) -> Element<'_, Message> {
+        container(row!(
+            widget::search_input(fl!("search"), self.search_text.as_str())
+                .on_input(Message::SearchInput)
+                .on_submit(|_| Message::Search)
+                .on_clear(Message::SearchClear),
+            Space::new().width(spacing.space_xxs),
+            widget::button::icon(widget::icon::from_name("media-playlist-shuffle-symbolic"))
+                .on_press(Message::Random)
+        ))
+        .into()
+    }
+
+    fn entries_view<'a>(&'a self, spacing: &Spacing) -> Element<'a, Message> {
+        let mut entries_list = column!().spacing(0).width(Length::Fill);
+
+        for (index, entry) in self.entries.iter().enumerate() {
+            entries_list = entries_list.push(self.entry_view(entry, spacing));
+
+            if index + 1 != self.entries.len() {
+                entries_list = entries_list.push(widget::divider::horizontal::default());
+            }
+        }
+
+        scrollable(
+            container(entries_list)
+                .width(Length::Fill)
+                .class(theme::Container::Card),
+        )
+        .spacing(spacing.space_xxs)
+        .width(Length::Fill)
+        .into()
+    }
+
+    fn entry_view<'a>(&'a self, entry: &'a Entry, spacing: &Spacing) -> Element<'a, Message> {
+        let bookmark_icon: widget::icon::Handle = if self.config.is_bookmarked(&entry.word) {
+            widget::icon::from_name("user-bookmarks-symbolic").into()
+        } else {
+            widget::icon::from_svg_bytes(STAR_OUTLINE_ICON).symbolic(true)
+        };
+
+        let entry_content = column!(
+            row!(
+                widget::text::title4(capitalize_first(&entry.word)).width(Length::Fill),
+                widget::button::icon(widget::icon::from_name("edit-copy-symbolic"))
+                    .icon_size(15)
+                    .on_press(Message::CopyWord(entry.word.clone())),
+                widget::button::icon(bookmark_icon)
+                    .icon_size(15)
+                    .on_press(Message::ToggleBookmark(entry.word.clone()))
+            )
+            .align_y(Center)
+        )
+        .push(Self::definition_list(entry, spacing));
+
+        entry_content
+            .padding([spacing.space_xxs, spacing.space_xs])
+            .into()
+    }
+
+    fn definition_list<'a>(
+        entry: &'a Entry,
+        spacing: &Spacing,
+    ) -> widget::Column<'a, Message, Theme> {
+        let mut definitions = column!();
+        let mut last_speech_part = "";
+        let mut definition_index = 1;
+
+        for definition in &entry.defs {
+            if last_speech_part != definition.speech_part {
+                definitions = definitions.push(
+                    container(widget::text::body(capitalize_first(
+                        &definition.speech_part,
+                    )))
+                    .padding([spacing.space_xxs, 0, 0, 0]),
+                );
+                last_speech_part = &definition.speech_part;
+                definition_index = 1;
+            }
+
+            definitions = definitions.push(
+                container(widget::text::body(format!(
+                    "{}. {}",
+                    definition_index,
+                    capitalize_first(&definition.def)
+                )))
+                .padding([spacing.space_xxxs, 0, 0, spacing.space_xxs]),
+            );
+
+            definition_index += 1;
+        }
+
+        definitions
     }
 }
 

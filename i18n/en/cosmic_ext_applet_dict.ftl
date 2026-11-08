@@ -1,7 +1,13 @@
+about = About
 app-title = Dictionary
+back = Back
+bookmark = Bookmark
 bookmarks = Bookmarks
 contributors = Contributors
+copy-to-clipboard = Copy to clipboard
+delete = Delete
 no-bookmarks = You have no bookmarks yet
+random = Random
 repository = Repository
 search = Search...
 support = Support
