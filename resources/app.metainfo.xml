@@ -66,14 +66,16 @@
     <id>com.system76.CosmicApplet</id>
   </provides>
   <releases>
-    <release version="0.3.0" date="2026-04-09">
+    <release version="0.4.0" date="2026-11-13">
       <url type="details">
-        https://github.com/cosmic-utils/cosmic-ext-applet-dict/releases/tag/v0.3.0
+        https://github.com/cosmic-utils/cosmic-ext-applet-dict/releases/tag/v0.4.0
       </url>
       <description>
-        <p>0.3.0</p>
+        <p>0.4.0</p>
         <ul>
-            <li>Rebased to the latest libcosmic to add frosted glass support</li>
+            <li>Brand new design to bring it closer into line with cosmic standards (thank you, Kartik!)</li>
+            <li>Added a button to copy a word and its definition to your clipboard</li>
+            <li>Added a 'Bookmarks' function so you can save rude words for future use</li>
         </ul>
       </description>
     </release>
