@@ -10,13 +10,13 @@
   <developer_name>Jonathan Capps</developer_name>
   <update_contact>cappsy@gmail.com</update_contact>
   <url type="homepage">
-    https://github.com/cappsyco/cosmic-ext-applet-dict
+    https://github.com/cosmic-utils/cosmic-ext-applet-dict
   </url>
   <url type="bugtracker">
-    https://github.com/cappsyco/cosmic-ext-applet-dict/issues
+    https://github.com/cosmic-utils/cosmic-ext-applet-dict/issues
   </url>
   <url type="contribute">
-    https://github.com/cappsyco/cosmic-ext-applet-dict
+    https://github.com/cosmic-utils/cosmic-ext-applet-dict
   </url>
   <name>Dictionary</name>
   <name xml:lang="cs">Slovník</name>
@@ -26,9 +26,9 @@
   <summary xml:lang="uk">Віджет словника англійської мови для COSMIC™</summary>
   <summary xml:lang="pl">Aplet słownika języka angielskiego dla środowiska COSMIC™</summary>
   <icon type="remote" width="64" height="64" scale="1">
-    https://github.com/cappsyco/cosmic-ext-applet-dict/raw/main/resources/icons/hicolor/scalable/apps/logo.svg
+    https://github.com/cosmic-utils/cosmic-ext-applet-dict/raw/main/resources/icons/hicolor/scalable/apps/logo.svg
   </icon>
-  <url type="vcs-browser">https://github.com/cappsyco/cosmic-ext-applet-dict</url>
+  <url type="vcs-browser">https://github.com/cosmic-utils/cosmic-ext-applet-dict</url>
   <description>
     <p>An English language dictionary applet, perfect for quick access searching for words and definitions, or cycling through some random words to further enrich your knowledge of the English language.</p>
     <p xml:lang="cs">Applet slovníku anglického jazyka, ideální pro rychlé vyhledávání slov a jejich definic, nebo pro procházení náhodných slov, která obohatí vaše znalosti angličtiny.</p>
@@ -46,7 +46,7 @@
   <screenshots>
     <screenshot type="default">
       <image>
-        https://raw.githubusercontent.com/cappsyco/cosmic-ext-applet-dict/main/resources/screenshots/screen1.jpg
+        https://raw.githubusercontent.com/cosmic-utils/cosmic-ext-applet-dict/main/resources/screenshots/screen1.jpg
       </image>
       <caption>
         A view of the open applet showing the search box, some results and the random link at the bottom.
@@ -66,9 +66,9 @@
     <id>com.system76.CosmicApplet</id>
   </provides>
   <releases>
-    <release version="0.2.0" date="2026-04-09">
+    <release version="0.3.0" date="2026-04-09">
       <url type="details">
-        https://github.com/cappsyco/cosmic-ext-applet-dict/releases/tag/v0.3.0
+        https://github.com/cosmic-utils/cosmic-ext-applet-dict/releases/tag/v0.3.0
       </url>
       <description>
         <p>0.3.0</p>

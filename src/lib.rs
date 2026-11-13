@@ -1,8 +1,13 @@
-use sqlite::State;
+// SPDX-License-Identifier: GPL-3.0-only
+
+use sqlite::{OpenFlags, State};
 use std::path::PathBuf;
+
+const DEFAULT_LIMIT: u8 = 10;
 
 #[derive(Debug)]
 pub struct Entry {
+    pub id: String,
     pub word: String,
     pub defs: Vec<Definition>,
 }
@@ -14,43 +19,78 @@ pub struct Definition {
     pub example: String,
 }
 
-pub fn fetch_words(search_q: Option<&str>) -> Result<Vec<Entry>, sqlite::Error> {
-    let connection = sqlite::open(get_dictionary_path())?;
+/// Searches for words beginning with `prefix`.
+///
+/// `limit` defaults to 10 when `None`.
+///
+/// # Errors
+/// Returns an error if the dictionary cannot be opened or the query fails.
+pub fn search_words(prefix: &str, limit: Option<u8>) -> Result<Vec<Entry>, sqlite::Error> {
+    let connection = open_dictionary()?;
+    let mut statement = connection.prepare(
+        "SELECT id, word FROM words WHERE word LIKE ?1 || '%' ESCAPE '\\' ORDER BY CASE WHEN word NOT LIKE '% %' THEN 0 ELSE 1 END, LOWER(word) ASC LIMIT ?2",
+    )?;
+    statement.bind((1, escape_like(prefix).as_str()))?;
+    statement.bind((2, i64::from(limit.unwrap_or(DEFAULT_LIMIT))))?;
 
-    let query = match search_q {
-        Some(q) => format!(
-            "SELECT id, word FROM words WHERE word LIKE '{}%' ORDER BY CASE WHEN word NOT LIKE '% %' THEN 0 ELSE 1 END, LOWER(word) ASC LIMIT 10",
-            q
-        ),
-        None => {
-            format!("SELECT id, word FROM words ORDER BY RANDOM() LIMIT 1")
+    Ok(fetch_entries(&connection, &mut statement))
+}
+
+// Returns up to `limit` random words.
+///
+/// `limit` defaults to 10 when `None`.
+///
+/// # Errors
+/// Returns an error if the dictionary cannot be opened or the query fails.
+pub fn random_words(limit: Option<u8>) -> Result<Vec<Entry>, sqlite::Error> {
+    let connection = open_dictionary()?;
+    let mut statement = match limit.unwrap_or(DEFAULT_LIMIT) {
+        0 => return Ok(Vec::new()),
+        1 => connection.prepare(
+            "SELECT id, word FROM words \
+             WHERE rowid >= 1 + abs(random() % (SELECT MAX(rowid) FROM words)) \
+             ORDER BY rowid LIMIT 1",
+        )?,
+        limit => {
+            let mut statement =
+                connection.prepare("SELECT id, word FROM words ORDER BY RANDOM() LIMIT ?1")?;
+            statement.bind((1, i64::from(limit)))?;
+            statement
         }
     };
-    let mut statement = connection.prepare(query)?;
+
+    Ok(fetch_entries(&connection, &mut statement))
+}
+
+fn open_dictionary() -> Result<sqlite::Connection, sqlite::Error> {
+    sqlite::Connection::open_with_flags(get_dictionary_path(), OpenFlags::new().with_read_only())
+}
+
+fn fetch_entries(
+    connection: &sqlite::Connection,
+    statement: &mut sqlite::Statement<'_>,
+) -> Vec<Entry> {
     let mut entries = vec![];
     while let Ok(State::Row) = statement.next() {
         let id = statement.read::<String, _>("id").unwrap_or_default();
         let word = statement.read::<String, _>("word").unwrap_or_default();
-        let defs = fetch_word_definitions(&connection, &id).unwrap_or_default();
+        let defs = fetch_word_definitions(connection, &id).unwrap_or_default();
 
-        entries.push(Entry {
-            word: word,
-            defs: defs,
-        });
+        entries.push(Entry { id, word, defs });
     }
 
-    Ok(entries)
+    entries
 }
 
 fn fetch_word_definitions(
     connection: &sqlite::Connection,
     word_id: &str,
 ) -> Result<Vec<Definition>, sqlite::Error> {
-    let query = format!(
-        "SELECT def, speech_part, example FROM definitions WHERE word_id = '{}'",
-        word_id
-    );
-    let mut statement = connection.prepare(query)?;
+    let mut statement = connection.prepare(
+        "SELECT def, speech_part, example FROM definitions WHERE word_id = ?1 GROUP BY (id)",
+    )?;
+    statement.bind((1, word_id))?;
+
     let mut definitions: Vec<Definition> = vec![];
     while let Ok(State::Row) = statement.next() {
         definitions.push(Definition {
@@ -63,6 +103,13 @@ fn fetch_word_definitions(
     }
 
     Ok(definitions)
+}
+
+fn escape_like(value: &str) -> String {
+    value
+        .replace('\\', "\\\\")
+        .replace('%', "\\%")
+        .replace('_', "\\_")
 }
 
 fn get_dictionary_path() -> PathBuf {
